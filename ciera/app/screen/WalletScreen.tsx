@@ -3,6 +3,9 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'rea
 import { Circle } from 'react-native-progress'; // Replace with react-native-progress
 import { LinearGradient } from 'expo-linear-gradient';
 import { ProgressBar } from 'react-native-paper'; // Add this line
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from '../_layout';
+import { MaterialIcons } from '@expo/vector-icons'; // For icons
 
 const WalletScreen = () => {
   const rewards = [
@@ -16,11 +19,12 @@ const WalletScreen = () => {
   const currentPoints = 50; // User's current points
   const progress = currentPoints / 100; // Convert to percentage for Circle
   const coinImage = require('../../assets/images/coin.svg'); // Add this line
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   return (
     <ScrollView style={styles.container}>
       {/* Loyalty Card Section */}
-      <LinearGradient
+      {/* <LinearGradient
         colors={['#000000', '#383838', '#121010', '#000000']}
         start={{ x: 1, y: 0 }}
         end={{ x: 0, y: 1 }}
@@ -42,18 +46,69 @@ const WalletScreen = () => {
               showsText={false}
             />
             <View style={styles.progressTextContainer}>
-              <Image source={coinImage} style={styles.coinImage} /> 
+              <Image source={coinImage} style={styles.coinImage} />
             </View>
           </View>
 
           <View style={styles.pointsContainer}>
             <Text style={styles.points}>
-              <Text style={{ fontSize: 22, fontWeight: 'bold' }}>{currentPoints}/100 POINTS</Text>
+              
+              <Text style={{ fontSize: 22, fontWeight: 'bold' }}>
+                {currentPoints}/
+                <Text style={{ fontSize: 16 }}>100 Points</Text>
+
+              </Text>
             </Text>
             <Text style={styles.loyaltyDescription}>
               Earn 25 more points to grab a mini-meal or redeem and grab a coffee.
             </Text>
-            <TouchableOpacity style={styles.redeemButton}>
+            <TouchableOpacity style={styles.redeemButton} onPress={() => navigation.navigate('QRCodeScreen')}>
+              <Text style={styles.redeemButtonText}>Redeem</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <Text style={styles.userNameFooter}>Jeeva</Text>
+      </LinearGradient> */}
+      <LinearGradient
+        colors={['#000000', '#1E1E1E', '#121010', '#000000']}
+        start={{ x: 1, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={styles.loyaltyCard}
+      >
+        <View style={styles.loyaltyHeader}>
+          <Text style={styles.loyaltyTitle}>LOYALTY CARD</Text>
+          <Text style={styles.userName}>CIERA</Text>
+        </View>
+        <View style={styles.loyaltyContent}>
+          <View style={styles.progressContainer}>
+            <Circle
+              size={100}
+              progress={progress}
+              color={'#FFC400'}
+              unfilledColor={'#444'}
+              borderWidth={0}
+              thickness={8}
+              showsText={false}
+            />
+            <View style={styles.progressTextContainer}>
+              <Image source={coinImage} style={styles.coinImage} />
+            </View>
+          </View>
+
+          <View style={styles.pointsContainer}>
+            <Text style={styles.points}>
+              <Text style={{ fontSize: 24, fontWeight: 'bold' }}>
+                {currentPoints}/
+                <Text style={{ fontSize: 18, fontWeight: 'normal' }}>100 Points</Text>
+              </Text>
+            </Text>
+            <Text style={styles.loyaltyDescription}>
+              Earn 25 more points to grab a mini-meal or redeem and grab a coffee.
+            </Text>
+            <TouchableOpacity
+              style={styles.redeemButton}
+              onPress={() => navigation.navigate('QRCodeScreen')}
+            >
               <Text style={styles.redeemButtonText}>Redeem</Text>
             </TouchableOpacity>
           </View>
@@ -61,23 +116,8 @@ const WalletScreen = () => {
         <Text style={styles.userNameFooter}>Jeeva</Text>
       </LinearGradient>
 
-      {/* How it works Section */}
       <Text style={styles.sectionTitle}>How it works?</Text>
-      <View style={styles.progressCard}>
-      <Text style={styles.sectionTitle}>Points</Text>
-        <View style={{height:0}}>
-        <ProgressBar progress={progress} color={'#FFC400'} style={styles.progressBar} />
-        </View>
-        <View style={styles.progressLabels}>
-          {rewards.map((reward) => (
-            <View key={reward.id} style={styles.progressLabel}>
-              <Text style={styles.rewardPoints}>{reward.points}</Text>
-              <Image source={coinImage} style={styles.coinImageSmall} /> {/* Always show coin image */}
-            </View>
-          ))}
-        </View>
-      </View>
-      <View style={styles.rewardsContainer}>
+      {/* <View style={styles.rewardsContainer}>
         {rewards.filter(reward => reward.points > 0).map((reward) => (
           <View key={reward.id} style={styles.rewardCard}>
             <Image source={reward.image} style={styles.rewardCardBackground} />
@@ -90,7 +130,25 @@ const WalletScreen = () => {
             </View>
           </View>
         ))}
-      </View>
+      </View> */}
+      <View style={styles.rewardsContainer}>
+      {rewards.filter(reward => reward.points > 0).map((reward) => (
+        <TouchableOpacity key={reward.id} style={styles.rewardCard} activeOpacity={0.8}>
+          <Image source={reward.image} style={styles.rewardCardBackground} />
+          <LinearGradient
+            colors={['rgba(0, 0, 0, 0)', 'rgba(0, 0, 0, 0.8)']}
+            style={styles.rewardCardOverlay}
+          >
+            <Text style={styles.rewardDescription}>{reward.description}</Text>
+            <View style={styles.rewardPointsContainer}>
+              <Text style={styles.rewardPoints}>{reward.points}</Text>
+              <Image source={coinImage} style={styles.coinImageSmall} />
+            </View>
+          </LinearGradient>
+          <MaterialIcons name="local-offer" size={24} color="#FFC400" style={styles.offerIcon} />
+        </TouchableOpacity>
+      ))}
+    </View>
 
       {/* Invite Friends Section */}
       <TouchableOpacity style={styles.inviteFriends}>
@@ -114,7 +172,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   loyaltyCard: {
-    borderRadius: 12,
+    borderRadius: 20,
     padding: 20,
     marginBottom: 20,
   },
@@ -122,20 +180,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
+    marginBottom: 10,
   },
   loyaltyTitle: {
     color: '#FFC400',
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
+    textTransform: 'uppercase',
   },
   userName: {
     color: '#FFF',
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
   },
   loyaltyContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
     width: '100%',
     marginTop: 10,
   },
@@ -146,20 +207,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  donutChart: {
-    width: 90,
-    height: 90,
-    // marginHorizontal: 10,
-  },
   progressTextContainer: {
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  progressText: {
-    color: '#FFC400',
-    fontSize: 16,
-    fontWeight: 'bold',
+  coinImage: {
+    width: 30,
+    height: 30,
   },
   pointsContainer: {
     flex: 1,
@@ -167,32 +222,38 @@ const styles = StyleSheet.create({
   },
   points: {
     color: '#FFC400',
-    fontSize: 18,
-    marginVertical: 10,
+    fontSize: 24,
+    marginBottom: 10,
   },
   loyaltyDescription: {
     color: '#FFC400',
-    fontSize: 10,
-    fontWeight: 500,
+    fontSize: 12,
+    fontWeight: '500',
     marginBottom: 20,
+    lineHeight: 18,
   },
   redeemButton: {
     backgroundColor: '#FFC400',
-    paddingVertical: 7,
-    paddingHorizontal: 15,
-    borderRadius: 5,
-    width: 100,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 25,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 120,
   },
   redeemButtonText: {
     color: '#000',
     fontWeight: 'bold',
     textAlign: 'center',
+    marginRight: 10,
   },
   userNameFooter: {
     color: '#FFF',
     fontSize: 14,
     marginTop: 10,
-    fontWeight: 500
+    fontWeight: '500',
+    textAlign: 'right',
   },
   sectionTitle: {
     fontSize: 18,
@@ -228,10 +289,15 @@ const styles = StyleSheet.create({
   rewardCard: {
     flex: 1,
     marginBottom: 20,
-    borderRadius: 10,
+    borderRadius: 15,
     overflow: 'hidden',
     position: 'relative',
-    height: 150, // Increase the height of the reward card
+    height: 180, // Increased height for better visuals
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 5,
   },
   rewardCardBackground: {
     width: '100%',
@@ -243,15 +309,17 @@ const styles = StyleSheet.create({
   },
   rewardCardOverlay: {
     flex: 1,
-    padding: 30,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Add a semi-transparent overlay
-    justifyContent: 'space-between', // Adjust to space-between
-    flexDirection: 'row', // Add this line
-    alignItems: 'center', // Add this line
+    padding: 20,
+    justifyContent: 'flex-end', // Align content to the bottom
   },
   rewardPointsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: 'rgba(255, 196, 0, 0.2)',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 20,
+    alignSelf: 'flex-start', // Align to the left
   },
   coinImageSmall: {
     width: 20,
@@ -264,10 +332,18 @@ const styles = StyleSheet.create({
     color: '#FFC400',
   },
   rewardDescription: {
-    fontSize: 14,
-    color: '#fff', // Change text color to white for better contrast
-    flexWrap: 'wrap',
-    fontWeight: 500
+    fontSize: 16,
+    color: '#fff',
+    fontWeight: '500',
+    marginBottom: 10,
+  },
+  offerIcon: {
+    position: 'absolute',
+    top: 15,
+    right: 15,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderRadius: 20,
+    padding: 5,
   },
   inviteFriends: {
     flexDirection: 'row',
@@ -293,10 +369,6 @@ const styles = StyleSheet.create({
   inviteDescription: {
     fontSize: 12,
     color: '#666',
-  },
-  coinImage: {
-    width: 30,
-    height: 30,
   },
 });
 

@@ -14,6 +14,7 @@ import SplashScreen from './SplashScreen';
 import SignInScreen from './SignInScreen';
 import CallUsScreen from './screen/CallUsScreen';
 import EditProfileScreen from './EditProfileScreen';
+import QRCodeScreen from './screen/QRCodeScreen';
 
 // Define the type for stack navigator
 export type RootStackParamList = {
@@ -26,6 +27,7 @@ export type RootStackParamList = {
   SignInScreen: undefined;
   CallUsScreen: undefined;
   EditProfileScreen: undefined;
+  QRCodeScreen: undefined;
 };
 
 // Create the stack navigator with the defined types
@@ -64,6 +66,7 @@ const App = () => {
       <Stack.Screen name="WalletScreen" component={WalletScreen} />
       <Stack.Screen name="CallUsScreen" component={CallUsScreen} options={{ title: 'Contact Us' }} />
       <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} options={{ title: 'Edit Profile' }} />
+      <Stack.Screen name="QRCodeScreen" component={QRCodeScreen}  options={{ headerShown: false }}/>
     </Stack.Navigator>
   );
 };
